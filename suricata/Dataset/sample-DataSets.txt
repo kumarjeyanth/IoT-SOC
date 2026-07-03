@@ -1,0 +1,131 @@
+Samples and Data sets:
+
+Tools:(Open Source)
+	
+	IoT Devices:
+		> STH sensors/Vega Board
+	Small MCUs:
+		> ESP32/STM32
+		> Vega Board
+	Gateway:
+		> Raspberry Pi 5
+	Firewall:
+		> IPTABLES/Pfsense
+	NIDS/NIPS: (IoT specific)
+		> Suricata
+		> zeek (formely bro)
+	HoneyPot: (Decoy System)
+		> Cowrie
+	message broker:
+		> EMQX
+		> Mosquitto - Message broker
+		> Apache Kafka - Message broker + streaming large scale
+	HIDS/HIPS: (IoT specific)
+		> Wazuh
+		> OSSEC
+		> Tripwire
+	SIEM: (IoT specific)
+		> wazuh
+		> ELK
+	Data DB + Indexing + storing:
+		> Wazuh OpenSearch
+		> Elastic search
+	Visualization:
+		> Wazuh's dashboard
+		> Kibana
+		> Grafana
+	IoT data analysis:
+		> Things board - IoT specific data detection software by its metadata & telemetry data
+		> Prometheus - IoT specific health/infrastructure monitoring detection data by its telemetry data
+	
+	
+
+
+
+> Info:
+	Wazuh: 
+		- https://medium.com/@iwanhai/custom-alert-rules-in-wazuh-5da9decd0963
+		- https://deepwiki.com/wazuh/wazuh-ruleset/2.2-detection-rules
+		- https://blog.cyberhawkconsultancy.org/2025/08/wazuh-advanced-rules-threat-hunting.html
+		- https://opennix.org/en/docs/wazuh/rules-decoders/
+		- https://opennix.org/docs/wazuh/rules-decoders/wazuh-rules/
+		- https://documentation.wazuh.com/current/user-manual/ruleset/rules/index.html
+	IDS/IPS:
+		- https://github.com/JoshPatlingrao/HTB-Working-With-IDS-IPS/blob/main/README.md
+		- https://www.unb.ca/cic/datasets/ids-2017.html
+		- https://www.sciencedirect.com/science/article/pii/S2665963822001300
+		- https://www.stratosphereips.org/datasets-iot23
+		- https://www.kaggle.com/datasets/programmer3/ton-iot-network-intrusion-dataset
+	IoT malware/vuln:
+		- https://www.mdpi.com/2079-9292/14/21/4196
+		- https://www.researchgate.net/publication/388067875_CveBinarySheet_A_Comprehensive_Pre-built_Binaries_Database_for_IoT_Vulnerability_Analysis
+
+> Sample data sets:
+	"Data sets DB" "https://www.kaggle.com/" "https://www.dataquest.io/blog/free-datasets-for-projects/"
+
+	Wazuh:
+		- https://github.com/socfortress/Wazuh-Rules
+	IDS/IPD:
+		- https://github.com/topics/intrusion-detection-system
+		- https://github.com/IDSDatasets
+	IoT malware/vuln signatures:
+		- https://www.kaggle.com/
+		- https://kaggledatasets.github.io/
+		- https://github.com/shramos/Awesome-Cybersecurity-Datasets
+		- https://www.unb.ca/cic/datasets/iotdataset-2023.html
+		- https://data.mendeley.com/datasets/7m58kxs742/1 ---> vuln
+
+IoT telemetry dataset:
+	> https://www.stratosphereips.org/datasets-iot23
+	> https://www.kaggle.com/datasets/surajsooraj26/iot-23
+
+IoT all resource Repo:
+	> https://v33ru.github.io/awesome-connected-things-sec/
+
+
+
+IoT / benign + attack datasets
+
+Edge-IIoTset (Kaggle): https://www.kaggle.com/datasets/mohamedamineferrag/edgeiiotset-cyber-security-dataset-of-iot-iiot
+Bot‑IoT (UNSW): https://research.unsw.edu.au/projects/bot-iot-dataset
+TON_IoT / IoT-23 / IoT datasets index (Google Dataset Search): https://toolbox.google.com/datasetsearch
+
+
+
+Malware / PCAP collections
+Malware Traffic Analysis (PCAPs): https://www.malware-traffic-analysis.net/
+
+
+
+Firmware / exploits / vuln corpora
+Exploit Database: https://www.exploit-db.com/
+Firmware collections / IoT firmware search (FWHub / IoT firmware repos): https://fwup.org/
+
+MITRE ATT&CK: https://attack.mitre.org/
+Atomic Red Team (playbooks): https://github.com/redcanaryco/atomic-red-team
+Caldera (MITRE): https://github.com/mitre/caldera
+Sigma rules repo: https://github.com/SigmaHQ/sigma
+
+
+Datasets index and surveys (many others)
+NETRESEC dataset list / resources: https://www.netresec.com/?page=PCAP4SICS
+
+
+Tools for replaying & generating logs
+tcpreplay: https://tcpreplay.appneta.com/
+Suricata (IDS): https://suricata.io/
+Zeek (Bro): https://zeek.org/
+Wazuh (SIEM / HIDS): https://wazuh.com/
+
+
+
+
+Suricata IoT Rules:
+https://github.com/OISF/suricata/blob/main/rules/files.rules
+https://github.com/satta/awesome-suricata#rule-sets-and-lists
+https://github.com/travisbgreen/hunting-rules/blob/master/browser_extension.rules
+https://gist.github.com/williamzujkowski/fdd48db6a837ca02c00c79f7c4fd6cde
+=============================================	sampledatasets.txt END=====================
+
+
+

@@ -1,0 +1,7 @@
+alert icmp any any -> any any (msg:"LOCAL TEST: Ping Detected"; sid:9999991; rev:1;)
+alert icmp any any -> any any (msg:"TEST: ICMP Ping Detected"; classtype:not-suspicious; sid:1000001; rev:1;)
+alert http any any -> any any (msg:"TEST: HTTP GET Request Observed"; http.method; content:"GET"; classtype:not-suspicious; sid:1000002; rev:1;)
+alert dns any any -> any any (msg:"TEST: DNS Query for test.local"; dns.query; content:"test.local"; nocase; classtype:not-suspicious; sid:1000003; rev:1;)
+alert tcp any any -> any any (msg:"TEST: EICAR Test File Detected"; content:"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"; classtype:bad-unknown; sid:1000004; rev:1;)
+
+#==================================local.rules END============================

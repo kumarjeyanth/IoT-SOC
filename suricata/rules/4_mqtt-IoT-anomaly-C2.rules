@@ -1,0 +1,11 @@
+alert tcp $IOT_NET any -> $HOME_NET [22,23,80,443] (msg:"IoT: Unauthorized Lateral Movement Attempt"; flow:to_server,established; classtype:network-scan; sid:3000001; rev:1;)
+alert mqtt any any -> any 1883 (msg:"IoT: MQTT Connection Refused (Potential Brute Force/Misconfig)"; mqtt.reason_code:0x05; threshold:type threshold, track by_src, count 5, seconds 60; classtype:bad-unknown; sid:3000002; rev:3;)
+alert tcp $EXTERNAL_NET any -> $IOT_NET 23 (msg:"IoT: Mirai Botnet Telnet Login Attempt"; flow:to_server,established; content:"root"; nocase; content:"admin"; nocase; distance:1; threshold:type threshold, track by_src, count 3, seconds 10; classtype:bad-unknown; sid:3000003; rev:1;)
+alert dns $IOT_NET any -> any any (msg:"IoT: Device Queried Dynamic DNS Domain (Possible C2)"; dns.query; content:"duckdns.org"; nocase; classtype:trojan-activity; sid:3000004; rev:1;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"ET IoT Mirai Botnet CNC Check-in"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/login.php"; http.request_body; content:"username="; content:"password="; reference:url,github.com/decanio/suricata-IoT; classtype:trojan-activity; sid:3000005; rev:2;)
+alert tcp $HOME_NET any -> any 1883 (msg:"LOCAL IoT Plaintext MQTT Critical Command Detected"; flow:established,to_server; content:"|10|"; depth:1; content:"unencrypted_topic"; content:"action=unlock"; fast_pattern; classtype:policy-violation; sid:3000006; rev:2;)
+alert tcp $HOME_NET any -> $HOME_NET 23 (msg:"LOCAL IoT Internal Telnet Brute Force Attempt"; flow:to_server,established; content:"root"; nocase; content:"admin"; nocase; distance:0; threshold:type threshold, track by_src, count 10, seconds 60; classtype:suspicious-login; sid:3000007; rev:2;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"LOCAL IoT Rogue Firmware .bin Download Attempt"; flow:established,to_server; http.uri; content:".bin"; endswith; classtype:bad-unknown; sid:3000008; rev:2;)
+
+
+#================================================mqtt-IoT-Anomaly.rules END================

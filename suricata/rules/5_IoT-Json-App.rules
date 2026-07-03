@@ -1,0 +1,30 @@
+#IoT-JSON-App.rules starts here
+
+
+alert icmp any any -> any any (msg:"LOCAL TEST: Ping Detected"; sid:9999991; rev:1;)
+alert icmp any any -> any any (msg:"TEST: ICMP Ping Detected"; classtype:not-suspicious; sid:1000001; rev:1;)
+alert http any any -> any any (msg:"TEST: HTTP GET Request Observed"; http.method; content:"GET"; classtype:not-suspicious; sid:1000002; rev:1;)
+alert dns any any -> any any (msg:"TEST: DNS Query for test.local"; dns.query; content:"test.local"; nocase; classtype:not-suspicious; sid:1000003; rev:1;)
+alert tcp any any -> any any (msg:"TEST: EICAR Test File Detected"; content:"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"; classtype:bad-unknown; sid:1000004; rev:1;)
+
+
+# MATCHES SCENARIO 1: Severe Environmental Spike
+alert tcp any any -> any 1883 (msg:"IoT SOC: Critical Environmental CO2 Spike Detected"; flow:established,to_server; content:"\"co2\":"; pcre:"/\"co2\":\s*[2-5]\d{3}/"; classtype:bad-unknown; sid:1000001; rev:3;)
+
+# MATCHES SCENARIO 2: Physical Device Tampering Flag
+alert tcp any any -> any 1883 (msg:"IoT SOC: Device Tamper Alarm Triggered"; flow:established,to_server; content:"\"tamper_alarm\": true"; classtype:bad-unknown; sid:1000002; rev:3;)
+
+# MATCHES SCENARIO 4: Malicious Modified Firmware Variant
+alert tcp any any -> any 1883 (msg:"IoT SOC: Malicious Firmware Variant Detected"; flow:established,to_server; content:"9.9.9_MALWARE_MOD"; nocase; classtype:trojan-activity; sid:1000003; rev:3;)
+
+# MATCHES SCENARIO 3: Hardware Failure Exception (Frozen Sensor)
+alert tcp any any -> any 1883 (msg:"IoT SOC: Hardware Failure Exception - Frozen Sensor Error Detected"; flow:established,to_server; content:"\"temperature\": -99"; classtype:bad-unknown; sid:1000007; rev:3;)
+
+# NETWORK AUDIT: Flags any External Network connection attempting to hit an Internal Broker directly
+alert tcp !192.168.1.0/24 any -> any 1883 (msg:"IoT SOC: Unauthorized External Connection to MQTT Broker"; flow:to_server; classtype:policy-violation; sid:1000004; rev:3;)
+
+# FLOOD AUDIT: Detects rapid connection hammering over MQTT
+alert tcp any any -> any 1883 (msg:"IoT SOC: Potential MQTT Brute Force/Flood Attempt"; flow:to_server; flags:S; threshold:type threshold, track by_src, count 30, seconds 10; sid:1000005; rev:1;)
+
+
+#===================================IoT-JSON-App.rules END==============================

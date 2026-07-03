@@ -1,0 +1,9 @@
+# ---------------------------------------------------------------
+# SOURCE: IoT-JSON-App.rules  (6 unique rule(s))
+# ---------------------------------------------------------------
+alert tcp any any -> any 1883 (msg:"IoT SOC: Critical Environmental CO2 Spike Detected"; flow:established,to_server; content:"\"co2\":"; pcre:"/\"co2\":\s*[2-5]\d{3}/"; classtype:bad-unknown; sid:300024; rev:1;)
+alert tcp any any -> any 1883 (msg:"IoT SOC: Device Tamper Alarm Triggered"; flow:established,to_server; content:"\"tamper_alarm\": true"; classtype:bad-unknown; sid:300025; rev:1;)
+alert tcp any any -> any 1883 (msg:"IoT SOC: Malicious Firmware Variant Detected"; flow:established,to_server; content:"9.9.9_MALWARE_MOD"; nocase; classtype:trojan-activity; sid:300026; rev:1;)
+alert tcp any any -> any 1883 (msg:"IoT SOC: Hardware Failure Exception - Frozen Sensor Error Detected"; flow:established,to_server; content:"\"temperature\": -99"; classtype:bad-unknown; sid:300027; rev:1;)
+alert tcp !192.168.1.0/24 any -> any 1883 (msg:"IoT SOC: Unauthorized External Connection to MQTT Broker"; flow:to_server; classtype:policy-violation; sid:300028; rev:1;)
+alert tcp any any -> any 1883 (msg:"IoT SOC: Potential MQTT Brute Force/Flood Attempt"; flow:to_server; flags:S; threshold:type threshold, track by_src, count 30, seconds 10; sid:300029; rev:1;)

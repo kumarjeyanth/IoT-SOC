@@ -1,0 +1,28 @@
+Links
+
+https://www.jetir.org/papers/JETIR2505A02.pdf
+https://www.mdpi.com/2073-431X/14/2/61
+https://www.researchgate.net/publication/326579980_Security_in_Internet_of_Things_Issues_Challenges_and_Solutions
+https://www.sciencedirect.com/science/article/abs/pii/S108480452400153X
+https://ieeexplore.ieee.org/document/10155021
+https://www.csoonline.com/article/564711/the-mirai-botnet-explained-how-teen-scammers-and-cctv-cameras-almost-brought-down-the-internet.html
+https://dailysecurityreview.com/blog/the-mirai-botnet-the-infamous-ddos-weapon/
+
+
+AWS implementation paper:
+https://pages.awscloud.com/rs/112-TZM-766/images/IoT-IDC-Whitepaper-US-Final.pdf?utm_source=chatgpt.com
+https://www.engpaper.com/ece/aws-iot-device-defender.html?utm_source=chatgpt.com
+https://pages.awscloud.com/rs/112-TZM-766/images/The%20Opportunity%20for%20the%20Next-Generation%20Connected%20Home%20Device%20Manufacturer.pdf?utm_source=chatgpt.com
+https://aws.amazon.com/blogs/iot/introducing-the-latest-aws-well-architected-framework-iot-lens/ (********working implementation*******) 
+https://aws.amazon.com/iot-core/features/
+https://docs.aws.amazon.com/iot/latest/developerguide/aws-iot-how-it-works.html  (***************Full Guide**********************)
+
+
+Azure implementation paper:
+https://www.microsoft.com/en-us/security/blog/2018/12/18/the-ai-cybersecurity-impact-for-iot/?utm_source=chatgpt.com
+https://www.reddit.com/r/microsoft/comments/jbqw0a/azure_defender_for_iot_is_now_in_public_preview/?utm_source=chatgpt.com
+https://arxiv.org/abs/1611.04880
+https://arxiv.org/abs/1903.00846
+https://arxiv.org/abs/2112.14618
+
+==================================links.txt      END============================================================
