@@ -1,6 +1,7 @@
 <div align="center">
 
-# 🛰️ Project GHOSTGRID
+# 🛰️ Project HELICARRIER
+
 ### IoT Offensive Security & Threat Emulation Research
 
 ![Status](https://img.shields.io/badge/status-active%20research-D1141F?style=for-the-badge)
