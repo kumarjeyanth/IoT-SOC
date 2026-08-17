@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'emqx-broker'
+    metrics_path: '/api/v5/prometheus/stats'
+    static_configs:
+      - targets: ['emqx:18083']
