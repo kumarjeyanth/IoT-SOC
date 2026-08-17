@@ -1,0 +1,100 @@
+services:
+
+  # ---------------------------------------------------------------------
+  # 1) EMQX - MQTT broker. Devices publish sensor data here.
+  # ---------------------------------------------------------------------
+  emqx:
+    image: emqx/emqx:5.8.2
+    container_name: emqx
+    restart: always
+    environment:
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: "public"   # change this after first login
+    ports:
+      - "1883:1883"     # MQTT (devices connect here)
+      - "8083:8083"     # MQTT over WebSocket
+      - "8084:8084"     # MQTT over WebSocket + TLS
+      - "8883:8883"     # MQTT over TLS
+      - "18083:18083"   # Dashboard + HTTP API (used by Prometheus scrape)
+    volumes:
+      - emqx-data:/opt/emqx/data
+      - emqx-log:/opt/emqx/log
+    networks:
+      - iot-net
+
+  # ---------------------------------------------------------------------
+  # 2) ThingsBoard CE (all-in-one image, bundled PostgreSQL)
+  #    NOTE: tb-postgres image's internal HTTP port really is 9090
+  #    (this is correct for THIS image, not a typo).
+  # ---------------------------------------------------------------------
+  thingsboard-ce:
+    image: "thingsboard/tb-postgres:3.6.3"
+    container_name: thingsboard-ce
+    restart: always
+    ports:
+      - "8086:9090"               # Web UI + REST API -> http://localhost:8086
+      - "1882:1883"               # TB's own native MQTT port (not used by the EMQX flow below, kept for direct-connect devices)
+      - "7070:7070"               # Edge RPC port
+      - "5683-5688:5683-5688/udp" # CoAP ports
+    environment:
+      TB_QUEUE_TYPE: in-memory
+    volumes:
+      - tb-data:/data
+      - tb-logs:/var/log/thingsboard
+    networks:
+      - iot-net
+
+  # ---------------------------------------------------------------------
+  # 3) ThingsBoard IoT Gateway
+  #    Acts as an MQTT SUBSCRIBER on EMQX, and re-publishes the data to
+  #    ThingsBoard using the gateway's own device access token.
+  #    Config files below (tb_gateway.json / mqtt.json) do the real work;
+  #    the env vars are just a documented-safe fallback for the same values.
+  # ---------------------------------------------------------------------
+  tb-gateway:
+    image: thingsboard/tb-gateway:latest
+    container_name: tb-gateway
+    restart: always
+    depends_on:
+      - thingsboard-ce
+      - emqx
+    # host / port / access token are NOT set here anymore — they live in
+    # tb_gateway.json (security.accessToken) below, as the single source
+    # of truth. Env vars would silently override the file and are an
+    # easy way to end up debugging the wrong config.
+    volumes:
+      - ./tb_gateway.json:/thingsboard_gateway/config/tb_gateway.json
+      - ./mqtt.json:/thingsboard_gateway/config/mqtt.json
+      - tb-gw-logs:/thingsboard_gateway/logs
+      - tb-gw-extensions:/thingsboard_gateway/extensions
+    networks:
+      - iot-net
+
+  # ---------------------------------------------------------------------
+  # 4) Prometheus - scrapes EMQX's own /prometheus/stats HTTP endpoint
+  # ---------------------------------------------------------------------
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_server
+    restart: always
+    depends_on:
+      - emqx
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - iot-net
+
+networks:
+  iot-net:
+    driver: bridge
+
+volumes:
+  emqx-data:
+  emqx-log:
+  tb-data:
+  tb-logs:
+  tb-gw-logs:
+  tb-gw-extensions:
+  prometheus-data:
