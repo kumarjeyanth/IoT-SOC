@@ -110,7 +110,6 @@ This is intentional and will remain the case for the duration of the project.
 
 For authorized discussion, collaboration inquiries, or freelance security assessment work:
 
-📧 **kumarjeyanth.security@gmail.com**
 🔗 **[LinkedIn](https://linkedin.com/in/kumarjeyanth)**
 
 <div align="center">
