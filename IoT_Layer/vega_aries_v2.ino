@@ -1,51 +1,14 @@
-/*
-  =====================================================================
-  VEGA ARIES V2.0 - Environmental Sensor Node (BME680 + WiFi/LoRa-Zigbee + MQTT)
-  =====================================================================
-
-  WHAT CHANGED IN THIS REVISION (read this first)
-  ---------------------------------------------------
-  FIX FOR "SEND FAILED - mqttClient.publish() returned false, state=0":
-
-      state=0 means MQTT_CONNECTED - the link to the broker is fine.
-      The failure is happening one layer deeper: PubSubClient was
-      splitting your ~430-byte JSON payload into small 64-byte chunks
-      (MQTT_MAX_TRANSFER_SIZE) and writing them one at a time. On this
-      board's WiFiNINA-clone module, that kind of fragmented/chunked
-      write is unreliable - one of the chunk writes fails partway
-      through, and publish() correctly reports that as a failure
-      instead of pretending it succeeded.
-
-      FIX: switch from the single-call mqttClient.publish(topic, buf,
-      len) to the STREAMING publish API:
-          mqttClient.beginPublish(topic, len, false);
-          mqttClient.write((const uint8_t*)payload, len);
-          mqttClient.endPublish();
-      This sends the payload as one continuous write instead of many
-      small fragmented ones, which is far more reliable on this
-      module. MQTT_MAX_TRANSFER_SIZE has been removed since it no
-      longer does anything useful here - streaming publish does not
-      use PubSubClient's internal chunking logic at all.
-
-      A short retry loop was also added: if the very first attempt
-      still fails (e.g. one bad write on a noisy hotspot link), it
-      retries up to 2 more times with a brief tcp settle delay before
-      giving up and moving on to the next reading, rather than
-      abandoning that sample the instant one write hiccups.
-
-  Everything else (transport switch, BME680 math, compile-error fixes
-  from earlier revisions, topic structure) is UNCHANGED and still
-  applies.
-  =====================================================================
-*/
-
 #include <Wire.h>
 #include <SPI.h>
 
 // =====================================================================
-// >>>>>>>>>>>>>>>>>> EDIT HERE #1: TRANSPORT MODE SWITCH <<<<<<<<<<<<<<<<
+// >>>>>>>>>>>>>> EDIT HERE #1: TRANSPORT MODE SWITCH <<<<<<<<<<<<<<<<
 //   Exactly ONE of the next two lines must be un-commented.
+//   TRANSPORT_WIFI refers using WiFi to transmit Data
+//   TRANSPORT_LORA_ZIGBEE refers using LoRa/ZigBee to transmit Data
 // =====================================================================
+
+
 #define TRANSPORT_WIFI
 // #define TRANSPORT_LORA_ZIGBEE
 
@@ -58,42 +21,32 @@
 
 #ifdef TRANSPORT_WIFI
   #include <WiFiNINA.h>
-  // Buffer still needs to be large enough to hold the whole payload
-  // (~430-450 bytes today) even though we now stream it - PubSubClient
-  // still uses this internally for tracking/other operations.
   #define MQTT_MAX_PACKET_SIZE 768
-  // NOTE: MQTT_MAX_TRANSFER_SIZE intentionally REMOVED. Streaming
-  // publish (beginPublish/write/endPublish) bypasses PubSubClient's
-  // internal chunked-write path entirely, so this define no longer
-  // has any effect on the actual publish and was left in only by
-  // accident before. Leaving it out avoids confusion.
   #include <PubSubClient.h>
 #endif
 
 #include <math.h>
 
-// --- Old min()/max() macro clash with ArduinoJson's std::string_view fix ---
 #undef min
 #undef max
 #include <ArduinoJson.h>
 
+
+
 // =====================================================================
-// ------------------------------ CONFIG --------------------------------
+// ---------------------- WiFi - CONFIG --------------------------------
 // =====================================================================
 
 #ifdef TRANSPORT_WIFI
-char ssid[] = "cdac-iot";
-char pass[] = "4444333221";
+char ssid[] = "cdac-iot";   //SSID HotSpot Name
+char pass[] = "4444333221"; // SSID HotSpot Password
 
 // Set this to the ACTUAL static IP of your Raspberry Pi on the
-// hotspot/hostapd network.
+// hotspot/hostapd network only if you are run hotspot in PI, else in standard AP use AP's IP
 const char* BROKER_IP   = "10.1.1.2";
 const uint16_t BROKER_PORT = 1883;
 
-// Fixed, organization-wide topic for sensor data (per CDAC naming
-// convention). ALL boards publish sensor readings here - the
-// board_name/mac fields inside the JSON are how you tell boards
-// apart downstream.
+// Publishing on below Topic
 const char* FIXED_DATA_TOPIC = "/CDAC/HQ/LAB-I/VEGA-IoT";
 #endif
 
@@ -116,8 +69,7 @@ const unsigned long PUBLISH_INTERVAL_MS = 10000;
 #define ADC_REF_VOLTAGE 3.3
 #define ADC_RESOLUTION 4095.0  // 1023.0 if your core is 10-bit instead of 12-bit
 
-// How many times to retry a failed publish before giving up on that
-// reading and moving on to the next cycle.
+// How many times to retry
 #define PUBLISH_MAX_RETRIES 3
 
 // =====================================================================
